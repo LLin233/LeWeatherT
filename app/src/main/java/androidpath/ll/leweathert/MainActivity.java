@@ -36,8 +36,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
-import java.util.StringTokenizer;
-
 import androidpath.ll.leweathert.Model.BackgroundColor;
 import androidpath.ll.leweathert.Model.CurrentWeather;
 import butterknife.ButterKnife;
@@ -314,16 +312,6 @@ public class MainActivity extends ActionBarActivity implements
         try {
             List<Address> address = geoCoder.getFromLocation(latitude, longitude, 1);
             String cityName = builder.append(address.get(0).getLocality()).append(", ").append(address.get(0).getCountryName()).toString();
-//            Log.i(TAG, );
-//            String addressStr = address.get(0).getAddressLine(1);
-//            StringTokenizer st = new StringTokenizer(addressStr, " ");
-//
-//            for (int i = 0; i < 2; i++) {
-//                if (st.hasMoreElements()) {
-//                    builder.append(st.nextElement() + " ");
-//                }
-//            }
-//
             Log.i(TAG, cityName);
             return cityName;
 
