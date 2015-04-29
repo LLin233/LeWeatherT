@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">LeWeatherT</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="api_keys">74045eca61dd14302c496b55fc1422e1</string>
+    <string name="error_title">Oops! Sorry!</string>
+    <string name="error_msg">There was an error. Try again.</string>
+    <string name="error_OK">OK</string>
+    <string name="network_no_available">Network is not available</string>
+</resources>
