@@ -1,6 +1,7 @@
 package androidpath.ll.leweathert;
 
 import android.content.Context;
+import android.content.IntentSender;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
@@ -20,6 +21,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Callback;
@@ -42,15 +45,18 @@ import butterknife.InjectView;
 
 
 public class MainActivity extends ActionBarActivity implements
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+    private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 
     public static final String TAG = MainActivity.class.getSimpleName();
     public static final String API_HEADER = "https://api.forecast.io/forecast/";
 
     private CurrentWeather mCurrentWeather;
     private BackgroundColor mBackgroundColor;
+    //variable geo location
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
+    private LocationRequest mLocationRequest;
 
     //define views
     @InjectView(R.id.temperature_label)
@@ -81,12 +87,12 @@ public class MainActivity extends ActionBarActivity implements
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
         mBackgroundColor = new BackgroundColor();
+        mCurrentWeather = new CurrentWeather();
         mProgressBar.setVisibility(View.INVISIBLE);
 
+
         buildGoogleApiClient();
-        if (mLastLocation != null) {
-            Log.d(TAG, mLastLocation.getLatitude() + "  " + mLastLocation.getLongitude());
-        }
+        initLocationRequest();
 
         final double latitude = 37;
         final double longitude = -121.9668;
@@ -94,7 +100,13 @@ public class MainActivity extends ActionBarActivity implements
         mRefreshImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getForecast(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+                requestLocationUpdates();
+                if (mLastLocation != null) {
+                    getForecast(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+                } else {
+                    requestLocationUpdates();
+                    alertUserAboutError();
+                }
             }
         });
 
@@ -136,9 +148,8 @@ public class MainActivity extends ActionBarActivity implements
                     try {
                         if (response.isSuccessful()) {
                             String jsonData = response.body().string();
-                            Log.v(TAG, jsonData);
-                            mCurrentWeather = getCurrentDetails(jsonData);
-                            mCurrentWeather.setLocation(getCityName(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
+
+                            mCurrentWeather = getCurrentDetails(jsonData, mCurrentWeather);
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -182,19 +193,17 @@ public class MainActivity extends ActionBarActivity implements
         mHumidityValue.setText(mCurrentWeather.getHumidity() + "");
         mPrecipValue.setText(mCurrentWeather.getPrecipChance() + "%");
         mSummaryLabel.setText(mCurrentWeather.getSummary());
-        mlocationLabel.setText(mCurrentWeather.getLocation());
         Drawable drawable = getResources().getDrawable(mCurrentWeather.getIconId());
         mIconImageView.setImageDrawable(drawable);
+        mlocationLabel.setText(mCurrentWeather.getLocation());
 
     }
 
-    private CurrentWeather getCurrentDetails(String jsonData) throws JSONException {
+    private CurrentWeather getCurrentDetails(String jsonData, CurrentWeather currentWeather) throws JSONException {
         JSONObject forecast = new JSONObject(jsonData);
-        String timeZone = forecast.getString("timezone");
-        Log.i(TAG, "From JSON : " + timeZone);
 
+        String timeZone = forecast.getString("timezone");
         JSONObject currently = forecast.getJSONObject("currently");
-        CurrentWeather currentWeather = new CurrentWeather();
         currentWeather.setHumidity(currently.getDouble("humidity"));
         currentWeather.setTime(currently.getLong("time"));
         currentWeather.setIcon(currently.getString("icon"));
@@ -202,8 +211,8 @@ public class MainActivity extends ActionBarActivity implements
         currentWeather.setSummary(currently.getString("summary"));
         currentWeather.setTemperature(currently.getDouble("temperature"));
         currentWeather.setTimeZone(forecast.getString("timezone"));
-        Log.d(TAG, currentWeather.getFormattedTime());
 
+        Log.d(TAG, "From JSON : " + timeZone + currentWeather.getFormattedTime());
         return currentWeather;
     }
 
@@ -228,21 +237,47 @@ public class MainActivity extends ActionBarActivity implements
         Log.i(TAG, "Location services connected.");
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
+        Log.i(TAG, mLastLocation.toString());
+        if (mLastLocation == null) {
+            Log.i(TAG, "request for new location.");
+            requestLocationUpdates();
+        } else {
 
+            handleNewLocation(mLastLocation);
+        }
 
-        if (mLastLocation != null) {
-            getForecast(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+    }
+
+    private void requestLocationUpdates() {
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+    }
+
+    private void handleNewLocation(Location location) {
+        Log.d(TAG, location.toString());
+        double nlatitude = location.getLatitude();
+        double nlongitude = location.getLongitude();
+        mCurrentWeather.setLocation(getCityName(nlatitude, nlongitude));
+        getForecast(nlatitude, nlongitude);
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Log.i(TAG, "Location services suspended. Please reconnect.");
+        if (connectionResult.hasResolution()) {
+            try {
+                // Start an Activity that tries to resolve the error
+                connectionResult.startResolutionForResult(this, CONNECTION_FAILURE_RESOLUTION_REQUEST);
+            } catch (IntentSender.SendIntentException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Log.i(TAG, "Location services connection failed with code " + connectionResult.getErrorCode());
         }
     }
 
     @Override
     public void onConnectionSuspended(int i) {
 
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        Log.i(TAG, "Location services suspended. Please reconnect.");
     }
 
 
@@ -265,9 +300,11 @@ public class MainActivity extends ActionBarActivity implements
     protected void onPause() {
         super.onPause();
         if (mGoogleApiClient.isConnected()) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
             mGoogleApiClient.disconnect();
         }
     }
+
 
     //get CityName from Geo Infomation.
 
@@ -276,20 +313,38 @@ public class MainActivity extends ActionBarActivity implements
         StringBuilder builder = new StringBuilder();
         try {
             List<Address> address = geoCoder.getFromLocation(latitude, longitude, 1);
-
-            String addressStr = address.get(0).getAddressLine(1);
-            StringTokenizer st = new StringTokenizer(addressStr, " ");
-            for (int i = 0; i < 2; i++) {
-                builder.append(st.nextElement() + " ");
-            }
-            String cityName = builder.toString(); //This is the complete address.
-            Log.d(TAG, cityName);
+            String cityName = builder.append(address.get(0).getLocality()).append(", ").append(address.get(0).getCountryName()).toString();
+//            Log.i(TAG, );
+//            String addressStr = address.get(0).getAddressLine(1);
+//            StringTokenizer st = new StringTokenizer(addressStr, " ");
+//
+//            for (int i = 0; i < 2; i++) {
+//                if (st.hasMoreElements()) {
+//                    builder.append(st.nextElement() + " ");
+//                }
+//            }
+//
+            Log.i(TAG, cityName);
             return cityName;
 
         } catch (IOException e) {
         } catch (NullPointerException e) {
         }
         return null;
+    }
+
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+    }
+
+    private void initLocationRequest() {
+        // Create the LocationRequest object
+        mLocationRequest = LocationRequest.create()
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                .setInterval(10 * 1000)        // 10 seconds, in milliseconds
+                .setFastestInterval(1 * 1000); // 1 second, in milliseconds
     }
 }
 
