@@ -47,7 +47,7 @@
         android:layout_above="@+id/timeLabel"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="60dp"
-        android:text="--"
+        android:text="Fremont, CA"
         android:textColor="@android:color/white"
         android:textSize="30dp"
         android:gravity="center"/>
