@@ -36,6 +36,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+
 import androidpath.ll.leweathert.Model.BackgroundColor;
 import androidpath.ll.leweathert.Model.CurrentWeather;
 import butterknife.ButterKnife;
@@ -315,8 +316,8 @@ public class MainActivity extends ActionBarActivity implements
             Log.i(TAG, cityName);
             return cityName;
 
-        } catch (IOException e) {
-        } catch (NullPointerException e) {
+        } catch (IOException | NullPointerException e) {
+            e.printStackTrace();
         }
         return null;
     }
@@ -332,7 +333,7 @@ public class MainActivity extends ActionBarActivity implements
         mLocationRequest = LocationRequest.create()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(10 * 1000)        // 10 seconds, in milliseconds
-                .setFastestInterval(1 * 1000); // 1 second, in milliseconds
+                .setFastestInterval(1000); // 1 second, in milliseconds
     }
 }
 
