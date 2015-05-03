@@ -51,7 +51,12 @@ public class Hour {
         mTimezone = timezone;
     }
 
-
-
-
+    @Override
+    public String toString() {
+        return "Hour{" +
+                "mSummary='" + mSummary + '\'' +
+                ", mTemperature=" + mTemperature +
+                ", mTimezone='" + mTimezone + '\'' +
+                '}';
+    }
 }

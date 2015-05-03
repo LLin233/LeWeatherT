@@ -30,6 +30,7 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -39,7 +40,9 @@ import java.util.Locale;
 
 import androidpath.ll.leweathert.Model.BackgroundColor;
 import androidpath.ll.leweathert.Model.Current;
+import androidpath.ll.leweathert.Model.Day;
 import androidpath.ll.leweathert.Model.Forecast;
+import androidpath.ll.leweathert.Model.Hour;
 import androidpath.ll.leweathert.R;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -52,7 +55,7 @@ public class MainActivity extends ActionBarActivity implements
     public static final String TAG = MainActivity.class.getSimpleName();
     public static final String API_HEADER = "https://api.forecast.io/forecast/";
 
-    private Current mCurrent;
+    //private Current mCurrent;
     private Forecast mForecast;
     private BackgroundColor mBackgroundColor;
     //variable geo location
@@ -95,6 +98,8 @@ public class MainActivity extends ActionBarActivity implements
         mBackgroundColor = new BackgroundColor();
         buildGoogleApiClient();
         initLocationRequest();
+
+
         final double latitude = 37;
         final double longitude = -121.9668;
         cityName = "";
@@ -102,7 +107,6 @@ public class MainActivity extends ActionBarActivity implements
         mRefreshImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                requestLocationUpdates();
                 if (mLastLocation != null) {
                     getForecast(mLastLocation.getLatitude(), mLastLocation.getLongitude());
                 } else {
@@ -152,9 +156,9 @@ public class MainActivity extends ActionBarActivity implements
 
                         if (response.isSuccessful()) {
                             String jsonData = response.body().string();
-                            //mCurrent = getCurrentDetails(jsonData, mCurrent);
-                            mCurrent = getCurrentDetails(jsonData);
+                            //mCurrent = getCurrentDetails(jsonData);
                             mForecast = parseForecastDetails(jsonData);
+
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -193,6 +197,8 @@ public class MainActivity extends ActionBarActivity implements
     }
 
     private void updateDisplay() {
+        Current mCurrent = mForecast.getCurrent();
+
         mTemperatureLabel.setText(mCurrent.getTemperature() + "");
         mTimeLabel.setText("At " + mCurrent.getFormattedTime() + " it will be");
         mHumidityValue.setText(mCurrent.getHumidity() + "");
@@ -207,8 +213,36 @@ public class MainActivity extends ActionBarActivity implements
     private Forecast parseForecastDetails(String jsonData) throws JSONException {
         Forecast forecast = new Forecast();
         forecast.setCurrent(getCurrentDetails(jsonData));
-
+        forecast.setHourlyForecast(getHourlyForecast(jsonData));
+        forecast.setDailyForecast(getDailyForecast(jsonData));
         return forecast;
+    }
+
+    private Day[] getDailyForecast(String jsonData) throws JSONException {
+
+        return new Day[0];
+    }
+
+    private Hour[] getHourlyForecast(String jsonData) throws JSONException {
+        JSONObject forecast = new JSONObject(jsonData);
+        String timeZone = forecast.getString("timezone");
+        JSONObject hourly = forecast.getJSONObject("hourly");
+        JSONArray data = hourly.getJSONArray("data");
+
+        //create hour array from json data
+        Hour[] hours = new Hour[data.length()];
+        for (int i = 0; i < data.length(); i++) {
+            JSONObject hourJson = data.getJSONObject(i);
+            Hour hour = new Hour();
+            hour.setSummary(hourJson.getString("summary"));
+            hour.setTemperature(hourJson.getDouble("temperature"));
+            hour.setIcon(hourJson.getString("icon"));
+            hour.setTime(hourJson.getLong("time"));
+            hour.setTimezone(timeZone);
+            hours[i] = hour;
+        }
+
+        return hours;
     }
 
     private Current getCurrentDetails(String jsonData) throws JSONException {
@@ -248,6 +282,7 @@ public class MainActivity extends ActionBarActivity implements
     @Override
     public void onConnected(Bundle bundle) {
         Log.i(TAG, "Location services connected.");
+
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
 
