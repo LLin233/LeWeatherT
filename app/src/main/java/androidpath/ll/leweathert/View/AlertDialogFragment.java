@@ -1,10 +1,12 @@
-package androidpath.ll.leweathert;
+package androidpath.ll.leweathert.View;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.os.Bundle;
+
+import androidpath.ll.leweathert.R;
 
 /**
  * Created by Le on 2015/4/26.

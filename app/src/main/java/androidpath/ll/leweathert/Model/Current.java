@@ -9,7 +9,7 @@ import androidpath.ll.leweathert.R;
 /**
  * Created by Le on 2015/4/27.
  */
-public class CurrentWeather {
+public class Current {
     private String mIcon;
     private long mTime;
     private double mTemperature;

@@ -1,4 +1,4 @@
-package androidpath.ll.leweathert;
+package androidpath.ll.leweathert.View;
 
 import android.content.Context;
 import android.content.IntentSender;
@@ -38,7 +38,9 @@ import java.util.List;
 import java.util.Locale;
 
 import androidpath.ll.leweathert.Model.BackgroundColor;
-import androidpath.ll.leweathert.Model.CurrentWeather;
+import androidpath.ll.leweathert.Model.Current;
+import androidpath.ll.leweathert.Model.Forecast;
+import androidpath.ll.leweathert.R;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
@@ -50,12 +52,14 @@ public class MainActivity extends ActionBarActivity implements
     public static final String TAG = MainActivity.class.getSimpleName();
     public static final String API_HEADER = "https://api.forecast.io/forecast/";
 
-    private CurrentWeather mCurrentWeather;
+    private Current mCurrent;
+    private Forecast mForecast;
     private BackgroundColor mBackgroundColor;
     //variable geo location
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
     private LocationRequest mLocationRequest;
+    private String cityName;
 
     //define views
     @InjectView(R.id.temperature_label)
@@ -85,16 +89,15 @@ public class MainActivity extends ActionBarActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
-        mBackgroundColor = new BackgroundColor();
-        mCurrentWeather = new CurrentWeather();
+
         mProgressBar.setVisibility(View.INVISIBLE);
-
-
+        // init
+        mBackgroundColor = new BackgroundColor();
         buildGoogleApiClient();
         initLocationRequest();
-
         final double latitude = 37;
         final double longitude = -121.9668;
+        cityName = "";
 
         mRefreshImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,6 +118,7 @@ public class MainActivity extends ActionBarActivity implements
     private void getForecast(double latitude, double longitude) {
 
         String forecastUrl = API_HEADER + getString(R.string.api_keys) + "/" + latitude + "," + longitude;
+
 
         if (isNetworkAvailable()) {
             toggleRefresh();
@@ -145,10 +149,12 @@ public class MainActivity extends ActionBarActivity implements
                     });
 
                     try {
+
                         if (response.isSuccessful()) {
                             String jsonData = response.body().string();
-
-                            mCurrentWeather = getCurrentDetails(jsonData, mCurrentWeather);
+                            //mCurrent = getCurrentDetails(jsonData, mCurrent);
+                            mCurrent = getCurrentDetails(jsonData);
+                            mForecast = parseForecastDetails(jsonData);
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -187,32 +193,40 @@ public class MainActivity extends ActionBarActivity implements
     }
 
     private void updateDisplay() {
-        mTemperatureLabel.setText(mCurrentWeather.getTemperature() + "");
-        mTimeLabel.setText("At " + mCurrentWeather.getFormattedTime() + " it will be");
-        mHumidityValue.setText(mCurrentWeather.getHumidity() + "");
-        mPrecipValue.setText(mCurrentWeather.getPrecipChance() + "%");
-        mSummaryLabel.setText(mCurrentWeather.getSummary());
-        Drawable drawable = getResources().getDrawable(mCurrentWeather.getIconId());
+        mTemperatureLabel.setText(mCurrent.getTemperature() + "");
+        mTimeLabel.setText("At " + mCurrent.getFormattedTime() + " it will be");
+        mHumidityValue.setText(mCurrent.getHumidity() + "");
+        mPrecipValue.setText(mCurrent.getPrecipChance() + "%");
+        mSummaryLabel.setText(mCurrent.getSummary());
+        Drawable drawable = getResources().getDrawable(mCurrent.getIconId());
         mIconImageView.setImageDrawable(drawable);
-        mlocationLabel.setText(mCurrentWeather.getLocation());
+        mlocationLabel.setText(mCurrent.getLocation());
 
     }
 
-    private CurrentWeather getCurrentDetails(String jsonData, CurrentWeather currentWeather) throws JSONException {
-        JSONObject forecast = new JSONObject(jsonData);
+    private Forecast parseForecastDetails(String jsonData) throws JSONException {
+        Forecast forecast = new Forecast();
+        forecast.setCurrent(getCurrentDetails(jsonData));
 
+        return forecast;
+    }
+
+    private Current getCurrentDetails(String jsonData) throws JSONException {
+        JSONObject forecast = new JSONObject(jsonData);
+        Current current = new Current();
+        current.setLocation(cityName);
         String timeZone = forecast.getString("timezone");
         JSONObject currently = forecast.getJSONObject("currently");
-        currentWeather.setHumidity(currently.getDouble("humidity"));
-        currentWeather.setTime(currently.getLong("time"));
-        currentWeather.setIcon(currently.getString("icon"));
-        currentWeather.setPrecipChance(currently.getDouble("precipProbability"));
-        currentWeather.setSummary(currently.getString("summary"));
-        currentWeather.setTemperature(currently.getDouble("temperature"));
-        currentWeather.setTimeZone(forecast.getString("timezone"));
+        current.setHumidity(currently.getDouble("humidity"));
+        current.setTime(currently.getLong("time"));
+        current.setIcon(currently.getString("icon"));
+        current.setPrecipChance(currently.getDouble("precipProbability"));
+        current.setSummary(currently.getString("summary"));
+        current.setTemperature(currently.getDouble("temperature"));
+        current.setTimeZone(forecast.getString("timezone"));
 
-        Log.d(TAG, "From JSON : " + timeZone + currentWeather.getFormattedTime());
-        return currentWeather;
+        Log.d(TAG, "From JSON : " + timeZone + current.getFormattedTime());
+        return current;
     }
 
     private boolean isNetworkAvailable() {
@@ -236,12 +250,12 @@ public class MainActivity extends ActionBarActivity implements
         Log.i(TAG, "Location services connected.");
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
-        Log.i(TAG, mLastLocation.toString());
+
         if (mLastLocation == null) {
             Log.i(TAG, "request for new location.");
             requestLocationUpdates();
         } else {
-
+            Log.i(TAG, mLastLocation.toString());
             handleNewLocation(mLastLocation);
         }
 
@@ -255,7 +269,7 @@ public class MainActivity extends ActionBarActivity implements
         Log.d(TAG, location.toString());
         double nlatitude = location.getLatitude();
         double nlongitude = location.getLongitude();
-        mCurrentWeather.setLocation(getCityName(nlatitude, nlongitude));
+        cityName = this.getCityName(nlatitude, nlongitude);
         getForecast(nlatitude, nlongitude);
     }
 
@@ -287,7 +301,6 @@ public class MainActivity extends ActionBarActivity implements
                 .addApi(LocationServices.API)
                 .build();
     }
-
 
     @Override
     protected void onResume() {
