@@ -231,6 +231,7 @@ public class MainActivity extends ActionBarActivity implements
             Day day = new Day();
             day.setSummary(dayJson.getString("summary"));
             day.setTemperatureMax(dayJson.getDouble("temperatureMax"));
+            day.setTemperatureMin(dayJson.getDouble("temperatureMin"));
             day.setIcon(dayJson.getString("icon"));
             day.setTime(dayJson.getLong("time"));
             day.setTimezone(timeZone);

@@ -9,7 +9,9 @@ public class Day {
     private String mSummary;
     private String mIcon;
     private double mTemperatureMax;
+    private double mTemperatureMin;
     private String mTimezone;
+
 
     public long getTime() {
         return time;
@@ -49,6 +51,14 @@ public class Day {
 
     public void setTimezone(String timezone) {
         mTimezone = timezone;
+    }
+
+    public double getTemperatureMin() {
+        return mTemperatureMin;
+    }
+
+    public void setTemperatureMin(double temperatureMin) {
+        mTemperatureMin = temperatureMin;
     }
 
 
