@@ -57,6 +57,7 @@ public class MainActivity extends ActionBarActivity implements
 
     public static final String TAG = MainActivity.class.getSimpleName();
     public static final String DAILY_FORECAST = "DAILY_FORECAST";
+    public static final String LOCATION = "LOCATION";
     public static final String API_HEADER = "https://api.forecast.io/forecast/";
 
     //private Current mCurrent;
@@ -422,6 +423,7 @@ public class MainActivity extends ActionBarActivity implements
     void goToDailyActivity() {
         Intent intent = new Intent(MainActivity.this, DailyForecastActivity.class);
         intent.putExtra(DAILY_FORECAST, mForecast.getDailyForecast());
+        intent.putExtra(LOCATION, cityName);
         startActivity(intent);
     }
 }

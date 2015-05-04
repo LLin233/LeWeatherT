@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.util.Arrays;
 
@@ -19,6 +20,8 @@ public class DailyForecastActivity extends ListActivity {
 
     @InjectView(R.id.DailyContainer)
     RelativeLayout container;
+    @InjectView(R.id.daily_location_label)
+    TextView mLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,9 +30,11 @@ public class DailyForecastActivity extends ListActivity {
         ButterKnife.inject(this);
 
         Intent intent = getIntent();
+        //update city
+        mLocation.setText(intent.getStringExtra(MainActivity.LOCATION));
+        //update list
         Parcelable[] parcelables = intent.getParcelableArrayExtra(MainActivity.DAILY_FORECAST);
         mDays = Arrays.copyOf(parcelables, parcelables.length, Day[].class);
-
         DayAdapter adapter = new DayAdapter(this, mDays);
         setListAdapter(adapter);
 
