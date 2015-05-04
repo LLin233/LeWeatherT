@@ -219,8 +219,26 @@ public class MainActivity extends ActionBarActivity implements
     }
 
     private Day[] getDailyForecast(String jsonData) throws JSONException {
+        JSONObject forecast = new JSONObject(jsonData);
+        String timeZone = forecast.getString("timezone");
+        JSONObject daily = forecast.getJSONObject("daily");
+        JSONArray data = daily.getJSONArray("data");
 
-        return new Day[0];
+        //create hour array from json data
+        Day[] days = new Day[data.length()];
+        for (int i = 0; i < data.length(); i++) {
+            JSONObject dayJson = data.getJSONObject(i);
+            Day day = new Day();
+            day.setSummary(dayJson.getString("summary"));
+            day.setTemperatureMax(dayJson.getDouble("temperatureMax"));
+            day.setIcon(dayJson.getString("icon"));
+            day.setTime(dayJson.getLong("time"));
+            day.setTimezone(timeZone);
+            days[i] = day;
+        }
+
+
+        return days;
     }
 
     private Hour[] getHourlyForecast(String jsonData) throws JSONException {
