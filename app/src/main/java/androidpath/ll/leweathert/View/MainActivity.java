@@ -2,8 +2,8 @@ package androidpath.ll.leweathert.View;
 
 import android.content.Context;
 import android.content.IntentSender;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -37,6 +37,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 import androidpath.ll.leweathert.Model.BackgroundColor;
 import androidpath.ll.leweathert.Model.Current;
@@ -181,7 +182,15 @@ public class MainActivity extends ActionBarActivity implements
     }
 
     private void changeRandomBGColor() {
-        container.setBackgroundColor(Color.parseColor(mBackgroundColor.getRandomColor()));
+        int[] androidColors = getResources().getIntArray(R.array.androidcolors);
+        int randomAndroidColor1 = androidColors[new Random().nextInt(androidColors.length)];
+        int randomAndroidColor2 = androidColors[new Random().nextInt(androidColors.length)];
+
+        GradientDrawable bg = new GradientDrawable(
+                GradientDrawable.Orientation.TOP_BOTTOM,
+                new int[]{randomAndroidColor1, randomAndroidColor2});
+        container.setBackground(bg);
+        //container.setBackgroundColor(randomAndroidColor);
     }
 
     private void toggleRefresh() {

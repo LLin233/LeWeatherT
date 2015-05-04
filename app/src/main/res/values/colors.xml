@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="blue" type="color">#ff59bfe5</item>
+    <item name="purple" type="color">#FFAA66CC</item>
+    <item name="green" type="color">#ff95cc40</item>
+    <item name="orange" type="color">#FFFFBB33</item>
+    <item name="red" type="color">#ffff9797</item>
+    <item name="darkblue" type="color">#ff2eb2cc</item>
+    <item name="darkpurple" type="color">#ffa13ccc</item>
+    <item name="darkorange" type="color">#FFFF8800</item>
+    <item name="theme1_start" type="color">#fff9c169</item>
+    <item name="theme1_end" type="color">#f25019</item>
+
+    <integer-array name="androidcolors">
+        <item>@color/blue</item>
+        <item>@color/purple</item>
+        <item>@color/green</item>
+        <item>@color/orange</item>
+        <item>@color/red</item>
+        <item>@color/darkblue</item>
+        <item>@color/darkpurple</item>
+        <item>@color/theme1_start</item>
+        <item>@color/theme1_end</item>
+        <item>@color/darkorange</item>
+    </integer-array>
+</resources>

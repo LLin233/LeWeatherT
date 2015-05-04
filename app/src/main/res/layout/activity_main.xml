@@ -1,14 +1,14 @@
-<RelativeLayout android:id="@+id/container"
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#ff7cc1f9"
-                android:paddingBottom="@dimen/activity_vertical_margin"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:paddingTop="@dimen/activity_vertical_margin"
-                tools:context=".MainActivity">
+<RelativeLayout
+    android:id="@+id/container"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ff7cc1f9"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".MainActivity">
 
     <TextView
         android:id="@+id/temperature_label"
@@ -47,21 +47,22 @@
         android:layout_above="@+id/timeLabel"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="60dp"
+        android:gravity="center"
         android:text="--"
         android:textColor="@android:color/white"
-        android:textSize="30dp"
-        android:gravity="center"/>
+        android:textSize="30dp"/>
 
     <ImageView
         android:id="@+id/iconImageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/cloudy_night"
         android:layout_above="@+id/timeLabel"
         android:layout_alignLeft="@+id/refreshImageView"
-        android:layout_alignStart="@+id/refreshImageView"
         android:layout_alignParentEnd="false"
-        android:layout_marginBottom="10dp"/>
+        android:layout_alignParentRight="false"
+        android:layout_alignStart="@+id/refreshImageView"
+        android:layout_marginBottom="10dp"
+        android:src="@drawable/cloudy_night"/>
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -131,11 +132,11 @@
         android:layout_below="@+id/linearLayout"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="40dp"
+        android:elegantTextHeight="false"
+        android:gravity="center"
         android:text="Getting current weather"
         android:textColor="@android:color/white"
-        android:textSize="18dp"
-        android:elegantTextHeight="false"
-        android:gravity="center"/>
+        android:textSize="18dp"/>
 
     <ImageView
         android:id="@+id/refreshImageView"
@@ -155,5 +156,34 @@
         android:layout_alignParentTop="true"
         android:layout_alignRight="@+id/refreshImageView"
         android:layout_alignStart="@+id/refreshImageView"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_hourly"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#40ffffff"
+            android:text="Hourly"
+            android:textColor="#ffffffff"
+            android:layout_marginRight="5dp"/>
+
+        <Button
+            android:id="@+id/btn_daily"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#40ffffff"
+            android:text="DAILY"
+            android:textColor="#ffffffff"
+            android:layout_marginLeft="5dp"/>
+    </LinearLayout>
 
 </RelativeLayout>
