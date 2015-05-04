@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="4dp"
+                android:paddingLeft="64dp"
+                android:paddingRight="32dp"
+                android:paddingTop="4dp"
+                tools:background="#ffaa00">
+
+    <ImageView
+        android:id="@+id/circleImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="false"
+        android:layout_centerVertical="true"
+        android:src="@drawable/bg_temperature"/>
+
+    <ImageView
+        android:id="@+id/iconImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/circleImageView"
+        android:layout_toRightOf="@+id/circleImageView"
+        android:paddingLeft="10dp"
+        android:src="@drawable/clear_day"/>
+
+    <TextView
+        android:id="@+id/dayNameLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/iconImageView"
+        android:layout_toRightOf="@+id/iconImageView"
+        android:paddingLeft="10dp"
+        android:textColor="#ffffffff"
+        android:textSize="20dp"
+        tools:text="Wednesday"/>
+
+    <TextView
+        android:id="@+id/daily_temperature_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/circleImageView"
+        android:layout_alignLeft="@+id/circleImageView"
+        android:layout_alignRight="@+id/circleImageView"
+        android:layout_alignTop="@+id/circleImageView"
+        android:gravity="center"
+        android:textColor="#fff25019"
+        android:textSize="20dp"
+        tools:text="100"
+        />
+
+
+</RelativeLayout>

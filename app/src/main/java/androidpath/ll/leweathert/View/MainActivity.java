@@ -1,6 +1,7 @@
 package androidpath.ll.leweathert.View;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentSender;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -47,6 +48,7 @@ import androidpath.ll.leweathert.Model.Hour;
 import androidpath.ll.leweathert.R;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 
 public class MainActivity extends ActionBarActivity implements
@@ -54,6 +56,7 @@ public class MainActivity extends ActionBarActivity implements
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 
     public static final String TAG = MainActivity.class.getSimpleName();
+    public static final String DAILY_FORECAST = "DAILY_FORECAST";
     public static final String API_HEADER = "https://api.forecast.io/forecast/";
 
     //private Current mCurrent;
@@ -109,6 +112,8 @@ public class MainActivity extends ActionBarActivity implements
             @Override
             public void onClick(View v) {
                 if (mLastLocation != null) {
+                    changeRandomBGColor();
+                    requestLocationUpdates();
                     getForecast(mLastLocation.getLatitude(), mLastLocation.getLongitude());
                 } else {
                     requestLocationUpdates();
@@ -116,7 +121,7 @@ public class MainActivity extends ActionBarActivity implements
                 }
             }
         });
-
+        changeRandomBGColor();
         getForecast(latitude, longitude);
     }
 
@@ -178,7 +183,7 @@ public class MainActivity extends ActionBarActivity implements
         } else {
             Toast.makeText(this, getString(R.string.network_no_available), Toast.LENGTH_SHORT).show();
         }
-        changeRandomBGColor();
+
     }
 
     private void changeRandomBGColor() {
@@ -410,6 +415,14 @@ public class MainActivity extends ActionBarActivity implements
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(10 * 1000)        // 10 seconds, in milliseconds
                 .setFastestInterval(1000); // 1 second, in milliseconds
+    }
+
+
+    @OnClick(R.id.btn_daily)
+    void goToDailyActivity() {
+        Intent intent = new Intent(MainActivity.this, DailyForecastActivity.class);
+        intent.putExtra(DAILY_FORECAST, mForecast.getDailyForecast());
+        startActivity(intent);
     }
 }
 
