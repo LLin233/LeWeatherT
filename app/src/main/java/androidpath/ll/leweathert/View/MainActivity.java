@@ -101,7 +101,7 @@ public class MainActivity extends ActionBarActivity implements
 
         mProgressBar.setVisibility(View.INVISIBLE);
         // init
-        mBackgroundColor = new BackgroundColor();
+        mBackgroundColor = ((BackgroundColor)getApplicationContext());
         buildGoogleApiClient();
         initLocationRequest();
 
@@ -190,12 +190,13 @@ public class MainActivity extends ActionBarActivity implements
 
     private void changeRandomBGColor() {
         int[] androidColors = getResources().getIntArray(R.array.androidcolors);
-        int randomAndroidColor1 = androidColors[new Random().nextInt(androidColors.length)];
-        int randomAndroidColor2 = androidColors[new Random().nextInt(androidColors.length)];
+        //int randomAndroidColor1 = androidColors[new Random().nextInt(androidColors.length)];
+        //int randomAndroidColor2 = androidColors[new Random().nextInt(androidColors.length)];
+        mBackgroundColor.setColors(new int[]{androidColors[new Random().nextInt(androidColors.length)], androidColors[new Random().nextInt(androidColors.length)]});
 
         GradientDrawable bg = new GradientDrawable(
                 GradientDrawable.Orientation.TOP_BOTTOM,
-                new int[]{randomAndroidColor1, randomAndroidColor2});
+                mBackgroundColor.getColors());
         container.setBackground(bg);
         //container.setBackgroundColor(randomAndroidColor);
     }

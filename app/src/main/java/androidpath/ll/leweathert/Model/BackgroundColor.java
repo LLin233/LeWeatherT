@@ -1,23 +1,21 @@
 package androidpath.ll.leweathert.Model;
 
-import java.util.ArrayList;
-import java.util.Random;
-
-import androidpath.ll.leweathert.R;
+import android.app.Application;
 
 /**
  * Created by Le on 2015/4/28.
  */
-public class BackgroundColor {
-    private ArrayList<PairColor> colorList;
+public class BackgroundColor extends Application {
+    private int[] colors;
 
-    public BackgroundColor() {
-        init();
+    public int[] getColors() {
+        return colors;
     }
 
-    private void init() {
-        colorList = new ArrayList<PairColor>();
-        colorList.add(new PairColor(R.color.theme1_start, R.color.theme1_end));
+    public void setColors(int[] colors) {
+        this.colors = colors;
+    }
+
 //        colorList.add("#FF6666");
 //        colorList.add("#CC9999");
 //        colorList.add("#666699");
@@ -35,29 +33,6 @@ public class BackgroundColor {
 //        colorList.add("#0099CC");
 //        colorList.add("#FF9933");
 //        colorList.add("#FF9966");
-    }
 
-
-    public PairColor getRandomColor() {
-        int index = (int) (Math.random() * colorList.size());
-        return colorList.get(index);
-    }
 }
 
-class PairColor {
-    private int startColor;
-    private int endColor;
-
-    public PairColor(int startColor, int endColor) {
-        this.endColor = endColor;
-        this.startColor = startColor;
-    }
-
-    public int getStartColor() {
-        return startColor;
-    }
-
-    public int getEndColor() {
-        return endColor;
-    }
-}

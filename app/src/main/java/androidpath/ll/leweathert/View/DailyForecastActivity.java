@@ -2,6 +2,7 @@ package androidpath.ll.leweathert.View;
 
 import android.app.ListActivity;
 import android.content.Intent;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.widget.RelativeLayout;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 
 import java.util.Arrays;
 
+import androidpath.ll.leweathert.Model.BackgroundColor;
 import androidpath.ll.leweathert.Model.Day;
 import androidpath.ll.leweathert.R;
 import androidpath.ll.leweathert.adapters.DayAdapter;
@@ -30,6 +32,13 @@ public class DailyForecastActivity extends ListActivity {
         ButterKnife.inject(this);
 
         Intent intent = getIntent();
+        //update background
+        BackgroundColor mBackgroundColor = ((BackgroundColor)getApplicationContext());
+        GradientDrawable bg = new GradientDrawable(
+                GradientDrawable.Orientation.TOP_BOTTOM,
+                mBackgroundColor.getColors());
+        container.setBackground(bg);
+
         //update city
         mLocation.setText(intent.getStringExtra(MainActivity.LOCATION));
         //update list
