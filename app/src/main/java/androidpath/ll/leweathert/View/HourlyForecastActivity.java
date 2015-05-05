@@ -11,6 +11,7 @@ import java.util.Arrays;
 
 import androidpath.ll.leweathert.Model.Hour;
 import androidpath.ll.leweathert.R;
+import androidpath.ll.leweathert.adapters.HourAdapter;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
@@ -31,10 +32,14 @@ public class HourlyForecastActivity extends ActionBarActivity {
         Parcelable[] parcelables = intent.getParcelableArrayExtra(MainActivity.HOURLY_FORECAST);
         mHours = Arrays.copyOf(parcelables, parcelables.length, Hour[].class);
 
+        HourAdapter adapter = new HourAdapter(mHours);
+        mRecyclerView.setAdapter(adapter);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
+
+        //for better performance
+        mRecyclerView.setHasFixedSize(true);
     }
 
 }

@@ -3,6 +3,9 @@ package androidpath.ll.leweathert.Model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by Le on 2015/5/3.
  */
@@ -34,16 +37,16 @@ public class Hour implements Parcelable {
         mSummary = summary;
     }
 
-    public String getIcon() {
-        return mIcon;
+    public int getIcon() {
+        return Forecast.getIconId(mIcon);
     }
 
     public void setIcon(String icon) {
         mIcon = icon;
     }
 
-    public double getTemperature() {
-        return mTemperature;
+    public int getTemperature() {
+        return (int)Math.round(mTemperature);
     }
 
     public void setTemperature(double temperature) {
@@ -56,6 +59,13 @@ public class Hour implements Parcelable {
 
     public void setTimezone(String timezone) {
         mTimezone = timezone;
+    }
+
+    public String getHour(){
+        SimpleDateFormat formatter = new SimpleDateFormat("h a");
+        Date date = new Date(mTime * 1000);
+        return formatter.format(date);
+
     }
 
     @Override
