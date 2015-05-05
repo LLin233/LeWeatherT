@@ -30,6 +30,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="androidpath.ll.leweathert.View.MainActivity" />
         </activity>
+        <activity
+            android:name=".View.HourlyForecastActivity"
+            android:label="@string/title_activity_hourly_forecast"
+            android:parentActivityName=".View.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="androidpath.ll.leweathert.View.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

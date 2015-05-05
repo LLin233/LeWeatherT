@@ -57,6 +57,7 @@ public class MainActivity extends ActionBarActivity implements
 
     public static final String TAG = MainActivity.class.getSimpleName();
     public static final String DAILY_FORECAST = "DAILY_FORECAST";
+    public static final String HOURLY_FORECAST = "HOURLY_FORECAST";
     public static final String LOCATION = "LOCATION";
     public static final String API_HEADER = "https://api.forecast.io/forecast/";
 
@@ -420,10 +421,17 @@ public class MainActivity extends ActionBarActivity implements
 
 
     @OnClick(R.id.btn_daily)
-    void goToDailyActivity() {
+    public void goToDailyActivity() {
         Intent intent = new Intent(MainActivity.this, DailyForecastActivity.class);
         intent.putExtra(DAILY_FORECAST, mForecast.getDailyForecast());
         intent.putExtra(LOCATION, cityName);
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.btn_hourly)
+    public void goToHourlyActivity() {
+        Intent intent = new Intent(MainActivity.this, HourlyForecastActivity.class);
+        intent.putExtra(HOURLY_FORECAST, mForecast.getHourlyForecast());
         startActivity(intent);
     }
 }
