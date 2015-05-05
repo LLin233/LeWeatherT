@@ -33,7 +33,8 @@ public class HourlyForecastActivity extends ActionBarActivity {
         ButterKnife.inject(this);
 
         //update background
-        BackgroundColor mBackgroundColor = ((BackgroundColor)getApplicationContext());
+        BackgroundColor mBackgroundColor;
+        mBackgroundColor = ((BackgroundColor)getApplicationContext());
         GradientDrawable bg = new GradientDrawable(
                 GradientDrawable.Orientation.TOP_BOTTOM,
                 mBackgroundColor.getColors());
@@ -44,7 +45,7 @@ public class HourlyForecastActivity extends ActionBarActivity {
         Parcelable[] parcelables = intent.getParcelableArrayExtra(MainActivity.HOURLY_FORECAST);
         mHours = Arrays.copyOf(parcelables, parcelables.length, Hour[].class);
 
-        HourAdapter adapter = new HourAdapter(mHours);
+        HourAdapter adapter = new HourAdapter(this, mHours);
         mRecyclerView.setAdapter(adapter);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);

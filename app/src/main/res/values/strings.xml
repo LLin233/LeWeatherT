@@ -7,6 +7,7 @@
     <string name="error_title">Oops! Sorry!</string>
     <string name="error_msg">There was an error. Try again.</string>
     <string name="error_OK">OK</string>
+    <string name="degree">℉</string>
     <string name="network_no_available">Network is not available</string>
     <string name="title_activity_daily_forecast">DailyForecastActivity</string>
     <string name="no_daily_data_msg">No data</string>
