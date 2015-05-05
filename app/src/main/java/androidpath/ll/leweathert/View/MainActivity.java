@@ -101,7 +101,7 @@ public class MainActivity extends ActionBarActivity implements
 
         mProgressBar.setVisibility(View.INVISIBLE);
         // init
-        mBackgroundColor = ((BackgroundColor)getApplicationContext());
+        mBackgroundColor = ((BackgroundColor) getApplicationContext());
         buildGoogleApiClient();
         initLocationRequest();
 
@@ -423,17 +423,26 @@ public class MainActivity extends ActionBarActivity implements
 
     @OnClick(R.id.btn_daily)
     public void goToDailyActivity() {
-        Intent intent = new Intent(MainActivity.this, DailyForecastActivity.class);
-        intent.putExtra(DAILY_FORECAST, mForecast.getDailyForecast());
-        intent.putExtra(LOCATION, cityName);
-        startActivity(intent);
+
+        if (isNetworkAvailable()) {
+            Intent intent = new Intent(MainActivity.this, DailyForecastActivity.class);
+            intent.putExtra(DAILY_FORECAST, mForecast.getDailyForecast());
+            intent.putExtra(LOCATION, cityName);
+            startActivity(intent);
+        } else {
+            Toast.makeText(this, getString(R.string.network_no_available), Toast.LENGTH_SHORT).show();
+        }
     }
 
     @OnClick(R.id.btn_hourly)
     public void goToHourlyActivity() {
-        Intent intent = new Intent(MainActivity.this, HourlyForecastActivity.class);
-        intent.putExtra(HOURLY_FORECAST, mForecast.getHourlyForecast());
-        startActivity(intent);
+        if (isNetworkAvailable()) {
+            Intent intent = new Intent(MainActivity.this, HourlyForecastActivity.class);
+            intent.putExtra(HOURLY_FORECAST, mForecast.getHourlyForecast());
+            startActivity(intent);
+        } else {
+            Toast.makeText(this, getString(R.string.network_no_available), Toast.LENGTH_SHORT).show();
+        }
     }
 }
 
