@@ -2,19 +2,39 @@ package androidpath.ll.leweathert.Model;
 
 import android.app.Application;
 
+import java.util.Random;
+
+import androidpath.ll.leweathert.R;
+
 /**
  * Created by Le on 2015/4/28.
  */
 public class BackgroundColor extends Application {
+    private int[] colorList;
     private int[] colors;
+
+    public void getColorList() {
+        colorList = getResources().getIntArray(R.array.androidcolors);
+    }
 
     public int[] getColors() {
         return colors;
     }
 
+    public BackgroundColor genColors() {
+        colors = new int[]{
+                colorList[new Random().nextInt(colorList.length)],
+                colorList[new Random().nextInt(colorList.length)]
+        };
+        this.setColors(colors);
+        return this;
+    }
+
+
     public void setColors(int[] colors) {
         this.colors = colors;
     }
+
 
 //        colorList.add("#FF6666");
 //        colorList.add("#CC9999");

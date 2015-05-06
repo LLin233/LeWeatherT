@@ -38,7 +38,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
 
 import androidpath.ll.leweathert.Model.BackgroundColor;
 import androidpath.ll.leweathert.Model.Current;
@@ -102,6 +101,7 @@ public class MainActivity extends ActionBarActivity implements
         mProgressBar.setVisibility(View.INVISIBLE);
         // init
         mBackgroundColor = ((BackgroundColor) getApplicationContext());
+        mBackgroundColor.getColorList();
         buildGoogleApiClient();
         initLocationRequest();
 
@@ -189,16 +189,10 @@ public class MainActivity extends ActionBarActivity implements
     }
 
     private void changeRandomBGColor() {
-        int[] androidColors = getResources().getIntArray(R.array.androidcolors);
-        //int randomAndroidColor1 = androidColors[new Random().nextInt(androidColors.length)];
-        //int randomAndroidColor2 = androidColors[new Random().nextInt(androidColors.length)];
-        mBackgroundColor.setColors(new int[]{androidColors[new Random().nextInt(androidColors.length)], androidColors[new Random().nextInt(androidColors.length)]});
-
         GradientDrawable bg = new GradientDrawable(
                 GradientDrawable.Orientation.TOP_BOTTOM,
-                mBackgroundColor.getColors());
+                mBackgroundColor.genColors().getColors());
         container.setBackground(bg);
-        //container.setBackgroundColor(randomAndroidColor);
     }
 
     private void toggleRefresh() {
