@@ -8,7 +8,9 @@ A weather app
 Libs:
 
   okhttp
+  
   butterknife
 
 Todo:
+
 improve performance to keep frames not lower than 60fps.
